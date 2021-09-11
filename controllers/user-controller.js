@@ -55,13 +55,42 @@ const userController = {
     deleteUsers({ params }, res) {
         User.findOneAndDelete({ _id: params.id })
             .then(dbUserData => {
-                if (!dbUserData){
+                if (!dbUserData) {
                     res.status(404).json({ message: 'No user matches this Id. '});
                     return;
                 }
                 res.json(dbUserData);
             })
             .catch(err => res.status(400).json(err));
+    },
+    addAFriend({ params}, res) {
+        User.findByIdAndUpdate(
+            { _id: params.userId },
+            { $pull: {friends: params.friendId }},
+            { new: true }
+        )
+        .then(dbUserData => {
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user matches this Id.' });
+            }
+            res.json(dbUserData);
+        })
+        .catch((err) => res.status(400).json(err));
+    },
+    removeAFriend({ params}, res) {
+        User.findByIdAndUpdate(
+            { _id: params.userId},
+            { $pull: { friends: params.friendId }},
+            { new: true }
+        )
+        .then((dbUserData) => {
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user matches this Id.' });
+                return;
+            }
+            res.json(dbUserData);
+        })
+        .catch((err) => res.status(400).json(err));
     }
 };
 
