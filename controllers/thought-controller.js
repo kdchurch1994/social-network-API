@@ -75,6 +75,30 @@ const thoughtController = {
             })
             .catch((err) => res.status(400).json(err));
         
+    },
+    addAReaction({ params, body }, res) {
+        Thought.findOneandUpdate(
+            { _id: params.thoughtId },
+            { $addToSet: { reactions: body} },
+            { new: true }
+        )
+            .then((dbThoughtData) => {
+                if (!dbThoughtData) {
+                    res.status(404).json({ message: 'No thought matches this Id.' });
+                    return;
+                }
+                res.json(dbThoughtData);
+            })
+            .catch((err) => res.json(err));
+    },
+    removeAReaction({ params}, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.thoughtId },
+            { $pull: { reactions: { reactionId: params.reactionId }}},
+            { new: true }
+        )
+        .then((dbThoughtData) => res.json(dbThoughtData))
+        .catch((err) => res.json(err));
     }
 
 };
