@@ -1,36 +1,36 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require('mongoose'); //Imports the use of mongodb
 
-const userSchema = new Schema(
+const userSchema = new Schema( //Create the userSchema
     {
-        username: {
-            type: String,
-            unique: true,
-            required: true,
-            trim: true,
+        username: { //Defines the username field
+            type: String, //Stores the data as a string
+            unique: true, //The username must be unique
+            required: true, //Is required
+            trim: true, //properly trims the username
         },
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            match: [
-                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email address!",
+        email: { //Defines the email field
+            type: String, //Stores the data as a String
+            unique: true, //Must be unique
+            required: true, //Required
+            match: [ //Matches the email to the following regular expression to ensure that the email address is valid
+                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$/, "Please enter a valid email address!",
             ],
         },
-        thoughts: [
+        thoughts: [ //Defines the thoughts field which stores the thoughts in an array
             {
                 type: Schema.Types.ObjectId,
-                ref: "Thought",
-            },
+                ref: 'Thought' //References the Thought Model
+            }
         ],
-        friends: [
+        friends: [ //Defines the friends field which stores the friends in an array
             {
                 type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
+                ref: 'User' //References the user model
+            }
+        ]
     },
     {
-        toJSON: { 
+        toJSON: { //Converts data to JSON
             virtuals: true,
             getters: true,
         },
@@ -38,10 +38,10 @@ const userSchema = new Schema(
     }
 );
 
-userSchema.virtual("friendCount").get(function () {
+userSchema.virtual("friendCount").get(function() { //Function to get total friend count for each user
     return this.friends.length;
 });
 
-const User = model ("User", userSchema);
+const User = model ('User', userSchema); //Creates the User Model based of the userSchema
 
-module.exports = User;
+module.exports = User; //Exports the use of the User model
